@@ -6,6 +6,10 @@ class SessionController {
     const token = await auth.attempt(email, password);
     return token;
   }
+  async whoami({ request, auth, response }) {
+    const user = await auth.getUser();
+    return user;
+  }
 }
 
 module.exports = SessionController;
