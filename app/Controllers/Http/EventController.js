@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -7,6 +7,7 @@
 /**
  * Resourceful controller for interacting with events
  */
+const Event = use("App/Models/Event");
 class EventController {
   /**
    * Show a list of all events.
@@ -17,30 +18,26 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index({ request, response, view, auth }) {
+    const events = await Event.query().with("user").fetch({
+      user_id: auth.user.id,
+    });
+    return events;
   }
 
-  /**
-   * Render a form to be used for creating a new event.
-   * GET events/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
+  async store({ request, response, auth }) {
+    const data = request.only(["description", "start_date_event"]);
+    const issetEvent = await Event.findBy({
+      start_date_event: data.start_date_event,
+    });
 
-  /**
-   * Create/save a new event.
-   * POST events
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+    if (issetEvent) {
+      return response.json({
+        message: "Já existe um evento, registrado para o mesmo período",
+      });
+    }
+    const event = Event.create({ ...data, user_id: auth.user.id });
+    return event;
   }
 
   /**
@@ -52,7 +49,11 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show({ params, request, response }) {
+    const event = await Event.findOrFail(params.id);
+    await event.load("user");
+
+    return event;
   }
 
   /**
@@ -64,8 +65,6 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
-  }
 
   /**
    * Update event details.
@@ -75,7 +74,13 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request, response }) {
+    const event = await Event.findOrFail(params.id);
+    const data = request.only(["description", "start_date_event"]);
+
+    event.merge(data);
+    await event.save();
+    return event;
   }
 
   /**
@@ -86,8 +91,10 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params }) {
+    const event = await Event.findOrFail(params.id);
+    await event.delete();
   }
 }
 
-module.exports = EventController
+module.exports = EventController;

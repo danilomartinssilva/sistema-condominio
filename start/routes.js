@@ -10,6 +10,10 @@ Route.post("login", "SessionController.store");
 Route.get("me", "SessionController.whoami");
 Route.post("passwords", "ForgotPasswordController.store");
 
+Route.group(() => {
+  Route.resource("events", "EventController").apiOnly();
+}).middleware(["auth"]);
+
 Route.get("/", () => {
   return { greeting: "Hello world in JSON" };
 });
