@@ -8,7 +8,10 @@ class EventsSchema extends Schema {
     this.create("events", (table) => {
       table.increments();
       table.text("description");
-      table.date("start_date_event").notNullable().unique();
+      table
+        .timestamp("start_date_event", { useTz: true })
+        .notNullable()
+        .unique();
       table
         .integer("user_id")
         .unsigned()

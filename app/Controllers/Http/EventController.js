@@ -8,6 +8,7 @@
  * Resourceful controller for interacting with events
  */
 const Event = use("App/Models/Event");
+const { isAfter, parseISO } = require("date-fns");
 class EventController {
   /**
    * Show a list of all events.
@@ -27,12 +28,19 @@ class EventController {
 
   async store({ request, response, auth }) {
     const data = request.only(["description", "start_date_event"]);
+
+    if (isAfter(new Date(), new Date(data.start_date_event))) {
+      return response.status(500).json({
+        message: "A data do evento, deve ser maior que a data de hoje",
+      });
+    }
+
     const issetEvent = await Event.findBy({
       start_date_event: data.start_date_event,
     });
 
     if (issetEvent) {
-      return response.json({
+      return response.status(500).json({
         message: "Já existe um evento, registrado para o mesmo período",
       });
     }
