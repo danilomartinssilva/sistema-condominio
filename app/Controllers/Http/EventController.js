@@ -27,7 +27,7 @@ class EventController {
   }
 
   async store({ request, response, auth }) {
-    const data = request.only(["description", "start_date_event"]);
+    const data = request.only(["description", "start_date_event", "ambient"]);
 
     if (isAfter(new Date(), new Date(data.start_date_event))) {
       return response.status(500).json({
