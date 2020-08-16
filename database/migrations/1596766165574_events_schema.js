@@ -7,7 +7,8 @@ class EventsSchema extends Schema {
   up() {
     this.create("events", (table) => {
       table.increments();
-      table.text("description");
+      table.text("description").notNullable();
+      table.text("ambient").notNullable();
       table
         .timestamp("start_date_event", { useTz: true })
         .notNullable()
