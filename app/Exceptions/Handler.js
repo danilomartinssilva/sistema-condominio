@@ -1,7 +1,7 @@
 "use strict";
 const Env = use("Env");
 const BaseExceptionHandler = use("BaseExceptionHandler");
-const Youch = use("Youch");
+const Youch = use("youch");
 
 /**
  * This class handles all exceptions thrown during
