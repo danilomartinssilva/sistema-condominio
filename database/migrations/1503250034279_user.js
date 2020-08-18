@@ -13,6 +13,7 @@ class UserSchema extends Schema {
       table.string("name", 254).notNullable();
 
       table.string("password", 60).notNullable();
+
       table.string("token");
       table.string("status");
       table.timestamp("token_created_at");

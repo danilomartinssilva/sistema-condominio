@@ -3,16 +3,24 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class EventsSchema extends Schema {
+class ProfileSchema extends Schema {
   up () {
-    this.create('events', table => {
+    this.create('profiles', table => {
       table.increments()
-      table.text('description').notNullable()
-      table.text('ambient').notNullable()
+
       table
-        .timestamp('start_date_event', { useTz: true })
+        .string('username', 80)
         .notNullable()
         .unique()
+      table
+        .string('email', 254)
+        .notNullable()
+        .unique()
+      table
+        .string('cpf', 11)
+        .notNullable()
+        .unique()
+      table.string('name', 254).notNullable()
       table
         .integer('user_id')
         .unsigned()
@@ -22,16 +30,13 @@ class EventsSchema extends Schema {
 
         .onDelete('SET NULL')
 
-      /* table.date("end_date_event"); */
-
-      table.string('status')
       table.timestamps()
     })
   }
 
   down () {
-    this.drop('events')
+    this.drop('profiles')
   }
 }
 
-module.exports = EventsSchema
+module.exports = ProfileSchema
