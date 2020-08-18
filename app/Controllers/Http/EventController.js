@@ -24,6 +24,15 @@ class EventController {
       .where('user_id', auth.user.id)
       .with('user')
       .fetch()
+
+    return events
+  }
+  async all ({ request, response, view, auth }) {
+    const events = await Event.query()
+
+      .with('user')
+      .fetch()
+
     return events
   }
 
@@ -46,7 +55,10 @@ class EventController {
       })
     }
     const event = Event.create({ ...data, user_id: auth.user.id })
-    return event
+
+    const event_added = await Event.findOrFail(event.id)
+    await event_added.load('user')
+    return event_added
   }
 
   /**
@@ -85,10 +97,11 @@ class EventController {
    */
   async update ({ params, request, response }) {
     const event = await Event.findOrFail(params.id)
-    const data = request.only(['description', 'start_date_event'])
+    const data = request.only(['description', 'start_date_event', 'status'])
 
     event.merge(data)
     await event.save()
+    await event.load('user')
     return event
   }
 

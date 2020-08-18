@@ -17,7 +17,7 @@ class UserController {
     const profile = await Profile.create({
       ...data_profile,
       user_id: user.id,
-      condominium_id: 1
+      condominium_id: data_profile.condominium_id
     })
     await user.roles().attach(3)
 
