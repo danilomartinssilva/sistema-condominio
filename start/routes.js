@@ -12,8 +12,11 @@ Route.post('passwords', 'ForgotPasswordController.store')
 
 Route.group(() => {
   Route.resource('events', 'EventController').apiOnly()
-  Route.resource('condominiums', 'CondominiumController').apiOnly()
+  Route.resource('condominiums', 'CondominiumController')
+    .apiOnly()
+    .except('index')
 }).middleware(['auth'])
+Route.get('condominiums', 'CondominiumController.index')
 
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }

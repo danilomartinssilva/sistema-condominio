@@ -7,7 +7,7 @@
 /**
  * Resourceful controller for interacting with condominiums
  */
-const Condominium = use('App/Model/Condominium')
+const Condominium = use('App/Models/Condominium')
 class CondominiumController {
   /**
    * Show a list of all condominiums.

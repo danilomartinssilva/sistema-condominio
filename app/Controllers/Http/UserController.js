@@ -1,8 +1,8 @@
 'use strict'
 const User = use('App/Models/User')
-const Role = use('App/Models/Role')
+
 const Profile = use('App/Models/Profile')
-const Condominium = use('App/Models/Condominium')
+
 class UserController {
   async store ({ request, response }) {
     const data = request.only(['username', 'email', 'password', 'name', 'cpf'])
