@@ -9,6 +9,22 @@ class ProfileSchema extends Schema {
       table.increments()
 
       table
+        .integer('condominium_id')
+        .unsigned()
+        .references('id')
+        .inTable('condominiums')
+        .onUpdate('CASCADE')
+
+        .onDelete('SET NULL')
+      table
+        .integer('user_id')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onUpdate('CASCADE')
+
+        .onDelete('SET NULL')
+      table
         .string('username', 80)
         .notNullable()
         .unique()
@@ -21,14 +37,6 @@ class ProfileSchema extends Schema {
         .notNullable()
         .unique()
       table.string('name', 254).notNullable()
-      table
-        .integer('user_id')
-        .unsigned()
-        .references('id')
-        .inTable('users')
-        .onUpdate('CASCADE')
-
-        .onDelete('SET NULL')
 
       table.timestamps()
     })
