@@ -9,8 +9,6 @@ Route.get("me", "SessionController.whoami");
 Route.post("passwords", "ForgotPasswordController.store");
 
 Route.group(() => {
-  Route.post("files", "FileController.store");
-  Route.get("files/:id", "FileController.show");
   Route.resource("events", "EventController").apiOnly();
   Route.resource("laws", "LawController").apiOnly();
   Route.get("eventsAll", "EventController.all");
@@ -20,6 +18,8 @@ Route.group(() => {
 }).middleware(["auth"]);
 
 Route.get("condominiums", "CondominiumController.index");
+Route.post("files", "FileController.store");
+Route.get("files/:id", "FileController.show");
 
 Route.get("/", () => {
   return { greeting: "Hello world in JSON" };
