@@ -4,6 +4,12 @@
 const Model = use('Model')
 
 class BalanceSheet extends Model {
+  condominium () {
+    return this.belongsTo('App/Models/Condominium')
+  }
+  file () {
+    return this.belongsTo('App/Models/File')
+  }
 }
 
 module.exports = BalanceSheet
