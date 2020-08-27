@@ -3,7 +3,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class Law extends Model {
+class Regulament extends Model {
   condominium () {
     return this.belongsTo('App/Models/Condominium')
   }
@@ -12,4 +12,4 @@ class Law extends Model {
   }
 }
 
-module.exports = Law
+module.exports = Regulament

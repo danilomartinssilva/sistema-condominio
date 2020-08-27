@@ -13,6 +13,8 @@ Route.group(() => {
   Route.resource('laws', 'LawController').apiOnly()
   Route.resource('balances', 'BalanceSheetController').apiOnly()
   Route.resource('conventions', 'ConventionController').apiOnly()
+  Route.resource('regulaments', 'RegulamentController').apiOnly()
+  Route.resource('minutes', 'MinuteController').apiOnly()
   Route.resource('surveys', 'SurveyController').apiOnly()
   Route.resource('questions', 'QuestionController').apiOnly()
   Route.post('addVotation', 'PollSurveyController.store')
