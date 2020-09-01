@@ -5,14 +5,11 @@ const Profile = use("App/Models/Profile");
 class SurveyController {
   async store({ request }) {
     const data = request.only(["header", "condominium_id", "questions"]);
-    const survey = new Survey();
-    await survey.save(data);
+    const survey = await Survey.create({
+      condominium_id: data.condominium_id,
+      header: data.header,
+    });
     await survey.questions().createMany(data.questions);
-
-    /*   for (let i = 0; i < data.questions; i++) {
-      await survey.questions().attach(data.questions[i]);
-    } */
-
     return survey;
   }
   async show({ request, response, params }) {
@@ -22,20 +19,20 @@ class SurveyController {
     return survey;
   }
   async index({ auth }) {
-    const { id } = auth.user;
-    const { condominium_id } = await Profile.findOrFail({ user_id: id });
+    const profile = await Profile.findByOrFail("user_id", auth.user.id);
     const survey = await Survey.query()
-      .where({ condominium_id: condominium_id })
+      .where({ condominium_id: profile.$originalAttributes.condominium_id })
       .fetch();
     return survey;
   }
+
   async update({ params, request }) {
     const data = request.only(["header"]);
     const survey = await Survey.findOrFail(params.id);
     survey.merge(data);
     return survey;
   }
-  async destroy() {
+  async destroy({ params }) {
     const survey = await Survey.findOrFail(params.id);
     await survey.delete();
   }

@@ -15,7 +15,7 @@ class QuestionSchema extends Schema {
         .onUpdate("CASCADE")
         .onDelete("SET NULL");
       table.string("question");
-
+      table.integer("total");
       table.timestamps();
     });
   }
