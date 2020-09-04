@@ -2,6 +2,7 @@
 
 const Survey = use("App/Models/Survey");
 const Profile = use("App/Models/Profile");
+const SurveyUser = use("App/Models/SurveyUser");
 class SurveyController {
   async store({ request }) {
     const data = request.only(["header", "condominium_id", "questions"]);
@@ -9,14 +10,38 @@ class SurveyController {
       condominium_id: data.condominium_id,
       header: data.header,
     });
-    await survey.questions().createMany(data.questions);
+    const questions = data.questions.filter(
+      (item) => item["question"] !== undefined
+    );
+    await survey.questions().createMany(questions);
     return survey;
   }
-  async show({ request, response, params }) {
+  async show({ request, response, params, auth }) {
+    const { user } = auth;
+    const surveyUser = await SurveyUser.query()
+      .where("user_id", user.id)
+      .where("survey_id", params.id)
+      .first();
+
     const survey = await Survey.findOrFail(params.id);
     await survey.load("condominium");
     await survey.load("questions");
-    return survey;
+
+    let surveyJson = survey.toJSON();
+    if (!surveyUser) {
+      surveyJson = {
+        ...surveyJson,
+
+        voted: false,
+      };
+    } else {
+      surveyJson = {
+        ...surveyJson,
+        voted: true,
+      };
+    }
+
+    return surveyJson;
   }
   async index({ auth }) {
     const profile = await Profile.findByOrFail("user_id", auth.user.id);
