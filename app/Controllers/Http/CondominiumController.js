@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -7,7 +7,7 @@
 /**
  * Resourceful controller for interacting with condominiums
  */
-const Condominium = use('App/Models/Condominium')
+const Condominium = use("App/Models/Condominium");
 class CondominiumController {
   /**
    * Show a list of all condominiums.
@@ -18,9 +18,9 @@ class CondominiumController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-    const condominiums = await Condominium.all()
-    return condominiums
+  async index({ request, response, view }) {
+    const condominiums = await Condominium.all();
+    return condominiums;
   }
 
   /**
@@ -32,7 +32,7 @@ class CondominiumController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create ({ request, response, view }) {}
+  async create({ request, response, view }) {}
 
   /**
    * Create/save a new condominium.
@@ -42,10 +42,10 @@ class CondominiumController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
-    const data = request.only(['name'])
-    const condominium = await Condominium.create(data)
-    return condominium
+  async store({ request, response }) {
+    const data = request.only(["name"]);
+    const condominium = await Condominium.create(data);
+    return condominium;
   }
 
   /**
@@ -57,7 +57,12 @@ class CondominiumController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {}
+  async show({ params, request, response, view }) {
+    const condominium = await Condominium.findOrFail(params.id);
+    await condominium.load("profiles");
+
+    return condominium;
+  }
 
   /**
    * Render a form to update an existing condominium.
@@ -68,7 +73,7 @@ class CondominiumController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {}
+  async edit({ params, request, response, view }) {}
 
   /**
    * Update condominium details.
@@ -78,7 +83,7 @@ class CondominiumController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {}
+  async update({ params, request, response }) {}
 
   /**
    * Delete a condominium with id.
@@ -88,10 +93,10 @@ class CondominiumController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-    const condominium = await Condominium.findOrFail(params.id)
-    await condominium.delete()
+  async destroy({ params, request, response }) {
+    const condominium = await Condominium.findOrFail(params.id);
+    await condominium.delete();
   }
 }
 
-module.exports = CondominiumController
+module.exports = CondominiumController;

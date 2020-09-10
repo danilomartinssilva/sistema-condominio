@@ -17,6 +17,10 @@ Route.group(() => {
   Route.resource("minutes", "MinuteController").apiOnly();
   Route.resource("surveys", "SurveyController").apiOnly();
   Route.resource("questions", "QuestionController").apiOnly();
+  Route.resource("notifications", "NotificationController").apiOnly();
+  Route.get("notificationsAll", "NotificationController.all");
+  Route.resource("notices", "PrivateNoticeController").apiOnly();
+  Route.resource("noticesAll", "PrivateNoticeController.all");
   Route.put("evaluating/:id", "UserRatingController.update");
 
   Route.post("addVotation", "PollSurveyController.store");
@@ -25,6 +29,10 @@ Route.group(() => {
     .apiOnly()
     .except("index");
   Route.post("files", "FileController.store");
+
+  Route.get("users", "UserController.index");
+  Route.get("users/:id", "UserController.show");
+  Route.put("users/:id", "UserController.update");
 }).middleware(["auth"]);
 Route.get("files/:id", "FileController.show");
 Route.get("condominiums", "CondominiumController.index");
