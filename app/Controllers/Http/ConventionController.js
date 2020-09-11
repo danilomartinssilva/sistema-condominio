@@ -20,12 +20,17 @@ class ConventionController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view, auth }) {
-    const { user } = auth
-    const profile = await Profile.query()
-      .where('user_id', user.id)
-      .fetch()
+    const user = await auth.getUser()
+    await user.loadMany(['roles', 'profiles'])
+    const userProfile = await user.profiles().first()
     const conventions = await Convention.query()
-      .where('condominium_id', profile.rows[0].condominium_id)
+      .where('condominium_id', userProfile.condominium_id)
+      .fetch()
+    return conventions
+  }
+  async all ({ request, response, auth }) {
+    const conventions = await Convention.query()
+      .with('condominium')
       .fetch()
     return conventions
   }
@@ -38,6 +43,7 @@ class ConventionController {
       'condominium_id'
     ])
     const convention = await Convention.create(data)
+    await convention.load('condominium')
     return convention
   }
 

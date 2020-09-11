@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -7,8 +7,9 @@
 /**
  * Resourceful controller for interacting with events
  */
-const Event = use("App/Models/Event");
-const { isAfter, parseISO } = require("date-fns");
+const Event = use('App/Models/Event')
+const Profile = use('App/Models/Event')
+const { isAfter, parseISO } = require('date-fns')
 class EventController {
   /**
    * Show a list of all events.
@@ -19,46 +20,47 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view, auth }) {
+  async index ({ request, response, view, auth }) {
     const events = await Event.query()
-      .where("user_id  ", auth.user.id)
-      .with("user")
-      .fetch();
+      .where('user_id  ', auth.user.id)
+      .with('user')
+      .fetch()
 
-    return events;
+    return events
   }
-  async all({ request, response, view, auth }) {
+  async all ({ request, response, view, auth }) {
     const events = await Event.query()
 
-      .with("user")
-      .fetch();
+      .with('user')
 
-    return events;
+      .fetch()
+
+    return events
   }
 
-  async store({ request, response, auth }) {
-    const data = request.only(["description", "start_date_event", "ambient"]);
+  async store ({ request, response, auth }) {
+    const data = request.only(['description', 'start_date_event', 'ambient'])
 
     if (isAfter(new Date(), new Date(data.start_date_event))) {
       return response.status(500).json({
-        message: "A data do evento, deve ser maior que a data de hoje",
-      });
+        message: 'A data do evento, deve ser maior que a data de hoje'
+      })
     }
 
     const issetEvent = await Event.findBy({
-      start_date_event: data.start_date_event,
-    });
+      start_date_event: data.start_date_event
+    })
 
     if (issetEvent) {
       return response.status(500).json({
-        message: "Já existe um evento, registrado para o mesmo período",
-      });
+        message: 'Já existe um evento, registrado para o mesmo período'
+      })
     }
-    const event = await Event.create({ ...data, user_id: auth.user.id });
+    const event = await Event.create({ ...data, user_id: auth.user.id })
 
-    const event_added = await Event.findOrFail(event.id);
-    await event_added.load("user");
-    return event_added;
+    const event_added = await Event.findOrFail(event.id)
+    await event_added.load('user')
+    return event_added
   }
 
   /**
@@ -70,11 +72,11 @@ class EventController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response }) {
-    const event = await Event.findOrFail(params.id);
-    await event.load("user");
+  async show ({ params, request, response }) {
+    const event = await Event.findOrFail(params.id)
+    await event.load('user')
 
-    return event;
+    return event
   }
 
   /**
@@ -95,14 +97,14 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {
-    const event = await Event.findOrFail(params.id);
-    const data = request.only(["description", "start_date_event", "status"]);
+  async update ({ params, request, response }) {
+    const event = await Event.findOrFail(params.id)
+    const data = request.only(['description', 'start_date_event', 'status'])
 
-    event.merge(data);
-    await event.save();
-    await event.load("user");
-    return event;
+    event.merge(data)
+    await event.save()
+    await event.load('user')
+    return event
   }
 
   /**
@@ -113,10 +115,10 @@ class EventController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params }) {
-    const event = await Event.findOrFail(params.id);
-    await event.delete();
+  async destroy ({ params }) {
+    const event = await Event.findOrFail(params.id)
+    await event.delete()
   }
 }
 
-module.exports = EventController;
+module.exports = EventController

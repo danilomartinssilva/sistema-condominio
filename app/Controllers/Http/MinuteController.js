@@ -20,15 +20,18 @@ class MinuteController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view, auth }) {
-    const { user } = auth
-    const profile = await Profile.query()
-      .where('user_id', user.id)
+    const user = await auth.getUser()
+    await user.loadMany(['roles', 'profiles'])
+    const userProfile = await user.profiles().first()
+    const minutes = await Minute.query()
+      .where('condominium_id', userProfile.condominium_id)
       .fetch()
 
+    return minutes
+  }
+  async all ({ request, response, view, auth }) {
     const minutes = await Minute.query()
-      .where('condominium_id', profile.rows[0].condominium_id)
-      /*   .with("file")
-      .with("condominium") */
+      .with('condominium')
       .fetch()
 
     return minutes
@@ -54,10 +57,6 @@ class MinuteController {
    * @param {Response} ctx.response
    */
   async store ({ request, response, auth }) {
-    const { user } = auth
-    const profile = await Profile.query()
-      .where('user_id', user.id)
-      .fetch()
     const data = request.only([
       'name',
       'description',
@@ -65,6 +64,7 @@ class MinuteController {
       'condominium_id'
     ])
     const minute = await Minute.create(data)
+    await minute.load('condominium')
     return minute
   }
 
