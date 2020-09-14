@@ -12,17 +12,22 @@ class PrivateNoticeController {
 
     const notices = await PrivateNotice.query()
       .where("user_id", user.id)
+
       .fetch();
     return notices;
   }
 
-  async all({ request, response, view, auth, params }) {
+  async all({ request, response, view, auth }) {
+    const user = await auth.getUser();
+
     const notices = await PrivateNotice.query()
-      .where("condominium_id", params.condominium_id)
-      .fetch();
+      .with("user")
+      .with("condominium")
 
+      .fetch();
     return notices;
   }
+
   async store({ request, response }) {
     const data = request.only([
       "title",
@@ -32,6 +37,8 @@ class PrivateNoticeController {
     ]);
 
     const notice = await PrivateNotice.create(data);
+    await notice.load("condominium");
+    await notice.load("user");
     return notice;
   }
 
@@ -52,6 +59,8 @@ class PrivateNoticeController {
     const notice = await PrivateNotice.findOrFail(params.id);
     await notice.merge(data);
     await notice.save();
+    await notice.load("user");
+    await notice.load("condominium");
     return notice;
   }
 

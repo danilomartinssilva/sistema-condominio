@@ -40,7 +40,7 @@ class UserController {
     return user;
   }
   async index({ request, response }) {
-    const users = await User.all();
+    const users = await User.query().with("profiles").fetch();
     return users;
   }
   async show({ request, response, params }) {

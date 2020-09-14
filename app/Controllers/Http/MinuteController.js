@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -7,8 +7,8 @@
 /**
  * Resourceful controller for interacting with minutes
  */
-const Minute = use('App/Models/Minute')
-const Profile = use('App/Models/Profile')
+const Minute = use("App/Models/Minute");
+const Profile = use("App/Models/Profile");
 class MinuteController {
   /**
    * Show a list of all minutes.
@@ -19,22 +19,20 @@ class MinuteController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view, auth }) {
-    const user = await auth.getUser()
-    await user.loadMany(['roles', 'profiles'])
-    const userProfile = await user.profiles().first()
+  async index({ request, response, view, auth }) {
+    const user = await auth.getUser();
+    await user.loadMany(["roles", "profiles"]);
+    const userProfile = await user.profiles().first();
     const minutes = await Minute.query()
-      .where('condominium_id', userProfile.condominium_id)
-      .fetch()
+      .where("condominium_id", userProfile.condominium_id)
+      .fetch();
 
-    return minutes
+    return minutes;
   }
-  async all ({ request, response, view, auth }) {
-    const minutes = await Minute.query()
-      .with('condominium')
-      .fetch()
+  async all({ request, response, view, auth }) {
+    const minutes = await Minute.query().with("condominium").fetch();
 
-    return minutes
+    return minutes;
   }
 
   /**
@@ -46,7 +44,6 @@ class MinuteController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create ({ request, response, view }) {}
 
   /**
    * Create/save a new minute.
@@ -56,16 +53,16 @@ class MinuteController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response, auth }) {
+  async store({ request, response, auth }) {
     const data = request.only([
-      'name',
-      'description',
-      'file_id',
-      'condominium_id'
-    ])
-    const minute = await Minute.create(data)
-    await minute.load('condominium')
-    return minute
+      "name",
+      "description",
+      "file_id",
+      "condominium_id",
+    ]);
+    const minute = await Minute.create(data);
+    await minute.load("condominium");
+    return minute;
   }
 
   /**
@@ -77,11 +74,11 @@ class MinuteController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-    const minutes = await Minute.findOrFail(params.id)
-    await minutes.load('condominium')
-    await minutes.load('file')
-    return minutes
+  async show({ params, request, response, view }) {
+    const minutes = await Minute.findOrFail(params.id);
+    await minutes.load("condominium");
+    await minutes.load("file");
+    return minutes;
   }
 
   /**
@@ -93,7 +90,7 @@ class MinuteController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {}
+  async edit({ params, request, response, view }) {}
 
   /**
    * Update minute details.
@@ -103,17 +100,17 @@ class MinuteController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
-    const minute = await Minute.findOrFail(params.id)
+  async update({ params, request, response }) {
+    const minute = await Minute.findOrFail(params.id);
     const data = request.only([
-      'description',
-      'name',
-      'file_id',
-      'condominium_id'
-    ])
-    minute.merge(data)
-    await minute.save()
-    return minute
+      "description",
+      "name",
+      "file_id",
+      "condominium_id",
+    ]);
+    minute.merge(data);
+    await minute.save();
+    return minute;
   }
 
   /**
@@ -124,10 +121,10 @@ class MinuteController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-    const minute = await Minute.findOrFail(params.id)
-    await minute.delete()
+  async destroy({ params, request, response }) {
+    const minute = await Minute.findOrFail(params.id);
+    await minute.delete();
   }
 }
 
-module.exports = MinuteController
+module.exports = MinuteController;

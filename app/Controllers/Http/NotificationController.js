@@ -52,7 +52,7 @@ class NotificationController {
 
   async destroy({ params, request, response }) {
     const notification = await Notification.findOrFail(params.id);
-    notification.destroy();
+    await notification.delete();
   }
 }
 
