@@ -45,6 +45,8 @@ class UserController {
   }
   async show({ request, response, params }) {
     const user = await User.query().where("id", params.id).first();
+    await user.load("roles");
+
     let userToJson = user.toJSON();
     const profile = await Profile.findByOrFail("user_id", user.id);
 
@@ -71,6 +73,18 @@ class UserController {
     const profile = await Profile.findByOrFail("user_id", params.id);
     await profile.merge(data_profile);
     await profile.save();
+    const dataRole = request.only(["role_id"]);
+    if (dataRole) {
+      /*
+      await auth.user.groups().attach(group_users, (row) => {
+      if (row.group_id === group.id) {
+        row.price = priceTotal
+      }
+    })*/
+      await user.roles().where("user_id", params.id).detach();
+      await user.roles().where("user_id", params.id).attach(dataRole.role_id);
+    }
+    await user.load("roles");
     return user;
   }
 }
