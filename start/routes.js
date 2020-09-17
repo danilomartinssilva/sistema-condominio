@@ -26,7 +26,7 @@ Route.group(() => {
   Route.resource("notices", "PrivateNoticeController").apiOnly();
   Route.get("noticesAll", "PrivateNoticeController.all");
   Route.put("evaluating/:id", "UserRatingController.update");
-
+  Route.resource("sugestions", "SugestionController").apiOnly();
   Route.post("addVotation", "PollSurveyController.store");
   Route.get("eventsAll", "EventController.all");
   Route.resource("condominiums", "CondominiumController")
