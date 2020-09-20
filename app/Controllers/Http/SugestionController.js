@@ -36,13 +36,9 @@ class SugestionController {
    */
   async create({ request, response, view }) {}
 
-  /**
-   * Create/save a new sugestion.
-   * POST sugestions
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
+
+
+ @param {Response} ctx.response
    */
   async store({ request, response }) {
     const data = request.only([
