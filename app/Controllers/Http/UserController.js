@@ -1,92 +1,99 @@
-"use strict";
-const User = use("App/Models/User");
+'use strict'
+const User = use('App/Models/User')
 
-const Profile = use("App/Models/Profile");
-const Condominium = use("App/Models/Condominium");
-const Mail = use("Mail");
+const Profile = use('App/Models/Profile')
+const Condominium = use('App/Models/Condominium')
+const Mail = use('Mail')
 class UserController {
-  async store({ request, response }) {
-    const data = request.only(["username", "email", "password", "name", "cpf"]);
-    const user = await User.create(data);
+  async store ({ request, response }) {
+    const data = request.only(['username', 'email', 'password', 'name', 'cpf'])
+    const user = await User.create(data)
     const data_profile = request.only([
-      "username",
-      "email",
-      "name",
-      "cpf",
-      "condominium_id",
-    ]);
+      'username',
+      'email',
+      'name',
+      'cpf',
+      'condominium_id'
+    ])
     const profile = await Profile.create({
       ...data_profile,
       user_id: user.id,
-      condominium_id: data_profile.condominium_id,
-    });
-    await user.roles().attach(3);
+      condominium_id: data_profile.condominium_id
+    })
+    await user.roles().attach(3)
 
     const condominium = await Condominium.findOrFail(
       data_profile.condominium_id
-    );
+    )
 
     await Mail.send(
-      ["mails.register"],
+      ['mails.register'],
       { email: user.email, name: user.name, condominium: condominium.name },
-      (message) => {
+      message => {
         message
           .to(user.email)
-          .from("danilomartins.pacs@gmail.com", "Condomíno Perfil")
-          .subject("Registro de usuário");
+          .from('danilomartins.pacs@gmail.com', 'Condomíno Perfil')
+          .subject('Registro de usuário')
       }
-    );
+    )
 
-    return user;
+    return user
   }
-  async index({ request, response }) {
-    const users = await User.query().with("profiles").fetch();
-    return users;
-  }
-  async show({ request, response, params }) {
-    const user = await User.query().where("id", params.id).first();
-    await user.load("roles");
 
-    let userToJson = user.toJSON();
-    const profile = await Profile.findByOrFail("user_id", user.id);
+  async index ({ request, response }) {
+    const users = await User.query()
+      .with('profiles')
+      .fetch()
+    return users
+  }
+
+  async show ({ request, response, params }) {
+    const user = await User.query()
+      .where('id', params.id)
+      .first()
+    await user.load('roles')
+
+    let userToJson = user.toJSON()
+    const profile = await Profile.findByOrFail('user_id', user.id)
 
     const condominium = await Condominium.findByOrFail(
-      "id",
+      'id',
       profile.condominium_id
-    );
-    userToJson = { ...userToJson, condominium };
+    )
+    userToJson = { ...userToJson, condominium }
 
-    return userToJson;
+    return userToJson
   }
-  async update({ request, response, params }) {
-    const data = request.only(["username", "email", "name", "cpf", "status"]);
-    const user = await User.findByOrFail("id", params.id);
-    await user.merge(data);
-    await user.save();
+
+  async update ({ request, response, params }) {
+    const data = request.only(['username', 'email', 'name', 'cpf', 'status'])
+    const user = await User.findByOrFail('id', params.id)
+    await user.merge(data)
+    await user.save()
     const data_profile = request.only([
-      "username",
-      "email",
-      "name",
-      "cpf",
-      "condominium_id",
-    ]);
-    const profile = await Profile.findByOrFail("user_id", params.id);
-    await profile.merge(data_profile);
-    await profile.save();
-    const dataRole = request.only(["role_id"]);
+      'username',
+      'email',
+      'name',
+      'cpf',
+      'condominium_id'
+    ])
+    const profile = await Profile.findByOrFail('user_id', params.id)
+    await profile.merge(data_profile)
+    await profile.save()
+    const dataRole = request.only(['role_id'])
     if (dataRole) {
-      /*
-      await auth.user.groups().attach(group_users, (row) => {
-      if (row.group_id === group.id) {
-        row.price = priceTotal
-      }
-    })*/
-      await user.roles().where("user_id", params.id).detach();
-      await user.roles().where("user_id", params.id).attach(dataRole.role_id);
+      await user
+        .roles()
+        .where('user_id', params.id)
+        .detach()
+      await user
+        .roles()
+        .where('user_id', params.id)
+        .attach(dataRole.role_id)
     }
-    await user.load("roles");
-    return user;
+    await user.load('roles')
+    return user
   }
 }
 
-module.exports = UserController;
+module.exports = UserController

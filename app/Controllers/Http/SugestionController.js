@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -7,7 +7,7 @@
 /**
  * Resourceful controller for interacting with sugestions
  */
-const Sugestion = use("App/Models/Sugestion");
+const Sugestion = use('App/Models/Sugestion')
 class SugestionController {
   /**
    * Show a list of all sugestions.
@@ -19,10 +19,10 @@ class SugestionController {
    * @param {View} ctx.view
    */
 
-  async index({ request, response, view }) {
-    const sugestions = await Sugestion.all();
+  async index ({ request, response, view }) {
+    const sugestions = await Sugestion.all()
 
-    return sugestions;
+    return sugestions
   }
 
   /**
@@ -34,21 +34,17 @@ class SugestionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response, view }) {}
+  async create ({ request, response, view }) {}
 
-
-
- @param {Response} ctx.response
-   */
-  async store({ request, response }) {
+  async store ({ request, response }) {
     const data = request.only([
-      "subject",
-      "user_id",
-      "description",
-      "condominium_id",
-    ]);
-    const sugestion = await Sugestion.create(data);
-    return sugestion;
+      'subject',
+      'user_id',
+      'description',
+      'condominium_id'
+    ])
+    const sugestion = await Sugestion.create(data)
+    return sugestion
   }
 
   /**
@@ -60,19 +56,21 @@ class SugestionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {
-    const sugestion = await Sugestion.query().where("id", params.id).first();
-    await sugestion.load("user");
-    await sugestion.load("condominium");
-    return sugestion;
+  async show ({ params, request, response, view }) {
+    const sugestion = await Sugestion.query()
+      .where('id', params.id)
+      .first()
+    await sugestion.load('user')
+    await sugestion.load('condominium')
+    return sugestion
   }
 
-  async update({ params, request, response }) {
-    const sugestion = await Sugestion.find(params.id);
-    const data = request.only(["subject", "user_id", "description"]);
-    await sugestion.merge(data);
-    await sugestion.save();
-    return sugestion;
+  async update ({ params, request, response }) {
+    const sugestion = await Sugestion.find(params.id)
+    const data = request.only(['subject', 'user_id', 'description'])
+    await sugestion.merge(data)
+    await sugestion.save()
+    return sugestion
   }
 
   /**
@@ -83,10 +81,10 @@ class SugestionController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
-    const sugestion = await Sugestion.find(params.id);
-    await sugestion.delete();
+  async destroy ({ params, request, response }) {
+    const sugestion = await Sugestion.find(params.id)
+    await sugestion.delete()
   }
 }
 
-module.exports = SugestionController;
+module.exports = SugestionController
