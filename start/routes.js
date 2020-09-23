@@ -7,6 +7,7 @@ Route.post("users", "UserController.store").validator("User");
 Route.post("login", "SessionController.store");
 Route.get("me", "SessionController.whoami");
 Route.post("passwords", "ForgotPasswordController.store");
+Route.put("resetpassword", "ForgotPasswordController.update");
 
 Route.group(() => {
   Route.resource("events", "EventController").apiOnly();
