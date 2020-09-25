@@ -3,6 +3,7 @@ const User = use("App/Models/User");
 const crypto = require("crypto");
 const moment = require("moment");
 const Mail = use("Mail");
+const Env = use("Env");
 class ForgotPasswordController {
   async store({ request, response }) {
     try {
@@ -22,11 +23,12 @@ class ForgotPasswordController {
         (message) => {
           message
             .to(user.email)
-            .from("danilomartins.pacs@gmail.com", "Condomíno Perfil")
+            .from(Env.get("MAIL_USERNAME"), "Condomíno Perfil")
             .subject("Recuperação de senha");
         }
       );
     } catch (error) {
+      console.log("Error", error);
       return response.status(401).send({
         error: { message: "Algo não deu certo, esse e-mail existe mesmo?" },
       });

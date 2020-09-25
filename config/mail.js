@@ -28,6 +28,7 @@ module.exports = {
     port: Env.get("SMTP_PORT", 2525),
     host: Env.get("SMTP_HOST"),
     secure: false,
+
     tls: {
       rejectUnauthorized: false,
     },
@@ -35,6 +36,7 @@ module.exports = {
       user: Env.get("MAIL_USERNAME"),
       pass: Env.get("MAIL_PASSWORD"),
     },
+    requireTLS: true,
     maxConnections: 5,
     maxMessages: 100,
     rateLimit: 10,
