@@ -14,6 +14,7 @@ class UserController {
       "name",
       "cpf",
       "condominium_id",
+      "apartament_number",
     ]);
     const profile = await Profile.create({
       ...data_profile,
@@ -28,7 +29,11 @@ class UserController {
 
     await Mail.send(
       ["mails.register"],
-      { email: user.email, name: user.name, condominium: condominium.name },
+      {
+        email: user.email,
+        name: user.name,
+        condominium: condominium.name,
+      },
       (message) => {
         message
           .to(user.email)
@@ -56,7 +61,10 @@ class UserController {
       "id",
       profile.condominium_id
     );
-    userToJson = { ...userToJson, condominium };
+    userToJson = {
+      ...userToJson,
+      condominium,
+    };
 
     return userToJson;
   }
@@ -72,6 +80,7 @@ class UserController {
       "name",
       "cpf",
       "condominium_id",
+      "apartament_number",
     ]);
     const profile = await Profile.findByOrFail("user_id", params.id);
     await profile.merge(data_profile);
