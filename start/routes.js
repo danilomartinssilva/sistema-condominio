@@ -21,6 +21,7 @@ Route.group(() => {
   Route.resource("minutes", "MinuteController").apiOnly();
   Route.get("minutesAll", "MinuteController.all");
   Route.resource("surveys", "SurveyController").apiOnly();
+  Route.get("surveysAll", "SurveyController.all");
   Route.resource("questions", "QuestionController").apiOnly();
   Route.resource("notifications", "NotificationController").apiOnly();
   Route.get("notificationsAll", "NotificationController.all");

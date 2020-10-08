@@ -83,7 +83,13 @@ class CondominiumController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {}
+  async update({ params, request, response }) {
+    const data = request.only(["name"]);
+    const condominium = await Condominium.findOrFail(params.id);
+    await condominium.merge(data);
+    await condominium.save();
+    return condominium;
+  }
 
   /**
    * Delete a condominium with id.

@@ -3,6 +3,7 @@
 const Survey = use("App/Models/Survey");
 const Profile = use("App/Models/Profile");
 const SurveyUser = use("App/Models/SurveyUser");
+const QuestionUser = use("App/Models/QuestionUser");
 class SurveyController {
   async store({ request }) {
     const data = request.only(["header", "condominium_id", "questions"]);
@@ -43,6 +44,7 @@ class SurveyController {
 
     return surveyJson;
   }
+
   async index({ auth }) {
     const profile = await Profile.findByOrFail("user_id", auth.user.id);
     const survey = await Survey.query()
@@ -51,10 +53,35 @@ class SurveyController {
     return survey;
   }
 
+  async all({ auth, response }) {
+    const user = await auth.getUser();
+    const roles = await user.roles().first();
+    if (roles.name === "MASTER") {
+      const survey = await Survey.query().with("condominium").fetch();
+      return survey;
+    }
+    return response.status(401).json({ error: "Você não está autorizado" });
+  }
+
   async update({ params, request }) {
-    const data = request.only(["header"]);
+    const data = request.only(["header", "condominium_id"]);
     const survey = await Survey.findOrFail(params.id);
-    survey.merge(data);
+    await survey.merge(data);
+    await survey.save();
+    const dataQuestion = request.only(["questions"]);
+    if (dataQuestion) {
+      const questions = dataQuestion.questions.filter(
+        (item) => item["question"] !== undefined
+      );
+
+      await survey.questions().delete();
+      const surveyUser = await SurveyUser.findBy("survey_id", params.id);
+      if (surveyUser) {
+        await surveyUser.delete();
+      }
+      await survey.questions().createMany(questions);
+    }
+
     return survey;
   }
   async destroy({ params }) {

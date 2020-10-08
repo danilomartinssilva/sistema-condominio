@@ -7,7 +7,7 @@ class Survey extends Model {
   static boot() {
     super.boot();
     this.addHook("beforeCreate", async (surveyInterface) => {
-      surveyInterface.status = "waiting";
+      surveyInterface.status = "active";
     });
   }
   condominium() {
