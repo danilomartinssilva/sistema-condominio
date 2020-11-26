@@ -16,7 +16,7 @@ class UserController {
       "condominium_id",
       "apartament_number",
     ]);
-    const profile = await Profile.create({
+    await Profile.create({
       ...data_profile,
       user_id: user.id,
       condominium_id: data_profile.condominium_id,
@@ -57,6 +57,10 @@ class UserController {
     let userToJson = user.toJSON();
     const profile = await Profile.findByOrFail("user_id", user.id);
 
+    if (!profile.condominium_id) {
+      return user;
+    }
+
     const condominium = await Condominium.findByOrFail(
       "id",
       profile.condominium_id
@@ -85,10 +89,11 @@ class UserController {
     const profile = await Profile.findByOrFail("user_id", params.id);
     await profile.merge(data_profile);
     await profile.save();
-    const dataRole = request.only(["role_id"]);
-    if (dataRole) {
+    const { role_id } = request.only(["role_id"]);
+
+    if (role_id !== undefined) {
       await user.roles().where("user_id", params.id).detach();
-      await user.roles().where("user_id", params.id).attach(dataRole.role_id);
+      await user.roles().where("user_id", params.id).attach(role_id);
     }
     await user.load("roles");
     return user;
