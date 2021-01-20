@@ -16,6 +16,7 @@ class UserController {
       "condominium_id",
       "apartament_number",
     ]);
+
     await Profile.create({
       ...data_profile,
       user_id: user.id,
