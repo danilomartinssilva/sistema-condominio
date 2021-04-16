@@ -23,6 +23,7 @@ class CondominiumManualController {
     const profile = await user.profiles().first();
     const manuals = await CondominiumManual.query()
       .where("condominium_id", profile.condominium_id)
+      .with('file')
       .fetch();
 
     return manuals;
@@ -47,6 +48,7 @@ class CondominiumManualController {
       .first();
 
     await manuals.load("condominium");
+    await manuals.load('file')
     return manuals;
   }
 

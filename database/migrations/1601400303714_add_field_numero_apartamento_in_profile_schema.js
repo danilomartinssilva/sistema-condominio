@@ -12,7 +12,7 @@ class AddFieldNumeroApartamentoInProfileSchema extends Schema {
 
   down() {
     this.table('profiles', (table) => {
-      // reverse alternations
+      table.dropColumn('apartament_number')
     })
   }
 }
