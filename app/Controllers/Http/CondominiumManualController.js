@@ -31,7 +31,7 @@ class CondominiumManualController {
     }
 
     async store({ request, response }) {
-      const data = request.only(["description", "name", "condominium_id"]);
+      const data = request.only(["description", "name", "condominium_id","file_id"]);
       const manuals = await CondominiumManual.create(data);
 
       return manuals;
@@ -50,7 +50,7 @@ class CondominiumManualController {
 
     async update({ params, request, response }) {
       const manuals = await CondominiumManual.find(params.id);
-      const data = request.only(["subject", "user_id", "description"]);
+      const data = request.only(["subject", "user_id", "description","file_id"]);
       await manuals.merge(data);
       await manuals.save();
       return manuals;
